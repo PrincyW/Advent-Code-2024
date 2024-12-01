@@ -7,17 +7,15 @@ cookie = "session=53616c7465645f5fd698bebda299f4b28fd4a719fcbd421e327c50a819e733
 
 begin
   lists = URI.open(url, "Cookie" => cookie).read
-  # puts lists[13]
-  # puts lists[14]
-  # puts lists[15]
-  # puts lists[16]
-  # p lists.class
 rescue OpenURI::HTTPError => e
   puts "Failed to fetch input: #{e.message}"
 end
 
 
+
 #2 Transform the data into 2 arrays
+
+# The following method works ONLY with this format of data !
 
 def separate_numbers(input_string)
   # Split the input into lines
@@ -38,20 +36,57 @@ def separate_numbers(input_string)
   [array1, array2]
 end
 
-# Example input
-input = <<~NUMBERS
-  82728   61150
-  39850   94024
-  24609   43406
-  24964   98661
-  16230   17299
-NUMBERS
 
-# Call the function and print the results
-result = separate_numbers(input)
-puts "Array 1: #{result[0]}"
-puts "Array 2: #{result[1]}"
+#3 Measuring the difference between the two lists
+
+  def difference(array1, array2)
+    array1.zip(array2).map { |a, b| (a - b).abs }.sum
+  end
 
 
+#5 Total distance
 
-#3 Order the arrays
+  def distance (input_string)
+    separated_lists = separate_numbers(input_string)
+    list1 = separated_lists[0]
+    list2 = separated_lists[1]
+    sorted_list1 = list1.sort
+    sorted_list2 = list2.sort
+    return difference(sorted_list1, sorted_list2)
+  end
+
+
+
+puts "The total distance is #{distance(lists)}"
+
+#4 Similarity score
+
+  def similarity_score (input_string)
+    separated_lists = separate_numbers(input_string)
+    list1 = separated_lists[0]
+    list2 = separated_lists[1]
+    score = 0
+    list1.each do |number|
+      appearances = list2.count(number)
+      score = score + number*appearances
+    end
+    return score
+  end
+
+
+  puts "The similarity score is #{similarity_score(lists)}"
+# ************************** TESTS **************************
+
+# Example inputs
+example = "3   4
+4   3
+2   5
+1   3
+3   9
+3   3"
+
+#PART 1
+puts "Example : The total distance for the example is #{distance(example)}."
+
+# PART 2
+puts "Example : The similarity score is #{similarity_score(example)}"
