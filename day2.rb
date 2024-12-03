@@ -1,5 +1,5 @@
 require 'dotenv/load'
-require "open-uri"
+require 'open-uri'
 
 #1 Read the given data
 
